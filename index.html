@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Founder OS">
-  <title>Founder OS — Emil</title>
+  <title>Personal OS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -317,19 +317,19 @@
         <div class="grid-3">
           <div style="text-align:center">
             <div class="streak-val streak-zero" id="streak-wiet">-</div>
-            <div class="big-label" style="font-size:8px;margin-top:2px">Wiet</div>
+            <div class="big-label" style="font-size:8px;margin-top:2px">Habit A</div>
             <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
             <input type="date" id="streak-wiet-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
           </div>
           <div style="text-align:center">
             <div class="streak-val streak-zero" id="streak-sig">-</div>
-            <div class="big-label" style="font-size:8px;margin-top:2px">Sigaretten</div>
+            <div class="big-label" style="font-size:8px;margin-top:2px">Habit B</div>
             <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
             <input type="date" id="streak-sig-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
           </div>
           <div style="text-align:center">
             <div class="streak-val streak-zero" id="streak-alc">-</div>
-            <div class="big-label" style="font-size:8px;margin-top:2px">Alcohol</div>
+            <div class="big-label" style="font-size:8px;margin-top:2px">Habit C</div>
             <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
             <input type="date" id="streak-alc-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
           </div>
@@ -403,7 +403,7 @@
             <option value="Kandidaat geholpen">Kandidaat geholpen</option>
             <option value="Verbinding gemaakt">Verbinding gemaakt</option>
             <option value="Systeem gebouwd of verbeterd">Systeem gebouwd of verbeterd</option>
-            <option value="Investor of jurist contact">Investor of jurist contact</option>
+            <option value="Externe stakeholder contact">Externe stakeholder contact</option>
             <option value="Mijlpaal behaald">Mijlpaal behaald</option>
             <option value="Iets goeds voor een ander">Iets goeds voor een ander</option>
             <option value="Andere">Andere</option>
@@ -456,7 +456,7 @@
         <div class="grid-2" style="margin-bottom:8px">
           <div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--orange);line-height:1">€<span id="fin-debt-display">0</span></div>
-            <div class="big-label" style="margin-bottom:4px">schulden</div>
+            <div class="big-label" style="margin-bottom:4px">lasten</div>
             <div class="progress-bar"><div class="progress-fill" id="fin-debt-bar" style="background:var(--orange)"></div></div>
             <label class="field-label" style="margin-top:7px">Bedrag</label>
             <input type="number" id="fin-debt-input" min="0" onchange="saveFinance()" style="font-size:12px;padding:8px 9px">
@@ -480,19 +480,18 @@
       </div>
 
       <div class="card" style="border-color:rgba(139,139,255,0.3)">
-        <div class="card-title">Rijbewijs +300 XP</div>
-        <div class="stat-row"><span class="stat-label">Status</span><span class="badge" id="rijbewijs-badge">kwijt</span></div>
+        <div class="card-title">Sleutel Mijlpaal +300 XP</div>
+        <div class="stat-row"><span class="stat-label">Status</span><span class="badge" id="rijbewijs-badge">open</span></div>
         <div class="stat-row"><span class="stat-label">Markeer als geregeld</span><button class="btn-ghost" id="rijbewijs-btn" onclick="toggleRijbewijs()">Markeer</button></div>
-        <div class="quote" style="margin:10px 0 0;font-size:11px;font-style:normal">Het rijbewijs vertegenwoordigt de periode die je achter je laat.</div>
       </div>
 
       <div class="card" style="background:rgba(200,255,0,0.02);border-color:rgba(200,255,0,0.1)">
         <div class="card-title">Visie op 35</div>
         <div class="anker-item"><div class="anker-icon">👨‍👩‍👦</div><div class="anker-text">Mensen om je heen die blijven omdat ze willen</div></div>
-        <div class="anker-item"><div class="anker-icon">🏡</div><div class="anker-text">Ouders gezond, hen terugbetaald wat ze gaven</div></div>
+        <div class="anker-item"><div class="anker-icon">🏡</div><div class="anker-text">Familie gezond, alles in balans</div></div>
         <div class="anker-item"><div class="anker-icon">🌍</div><div class="anker-text">De wereld echt gezien, als iemand die keek</div></div>
         <div class="anker-item"><div class="anker-icon">🌅</div><div class="anker-text">'s Ochtends wakker, even stil voor de rechtbank begint</div></div>
-        <div class="quote" style="margin-top:12px;margin-bottom:0">"Nog steeds zoekende. En daar vrede mee."<br><span style="font-size:9px;font-style:normal;color:var(--dim)">— Emil, Curacao, april 2026</span></div>
+        <div class="quote" style="margin-top:12px;margin-bottom:0">"Nog steeds zoekende. En daar vrede mee."</div>
       </div>
 
     </section>
@@ -545,19 +544,19 @@ var LEVELS = [
   { n: 4, title: 'De Bouwer',      xp: 3500,  sub: 'Je bouwt echt. Elke dag een steen meer.' },
   { n: 5, title: 'De Ondernemer',  xp: 7000,  sub: 'Sophro leeft. De aanklager verliest terrein.' },
   { n: 6, title: 'Sophrosyne',     xp: 12000, sub: 'Wie je bent als niemand kijkt. Dat is genoeg.' },
-  { n: 7, title: 'Emil',           xp: 20000, sub: 'Geen masker meer. Geen toeschouwer. Alleen jij.' }
+  { n: 7, title: 'De Echte',       xp: 20000, sub: 'Geen masker meer. Geen toeschouwer. Alleen jij.' }
 ];
 
 var MILESTONES_CONFIG = [
   { key: 'sport',    label: 'Sportschool ingeschreven + biometrische scan' },
-  { key: 'stop',     label: 'Stop datum ingesteld (wiet + sigaretten)' },
-  { key: 'jurist',   label: 'Jurist consulteren - ZW + bedingclausule' },
+  { key: 'stop',     label: 'Stop datum ingesteld' },
+  { key: 'jurist',   label: 'Jurist consulteren' },
   { key: 'bv',       label: 'BV opzetten via notaris' },
   { key: 'holding',  label: 'Holding structuur opzetten' },
-  { key: 'investor', label: 'Investor contract tekenen' },
-  { key: 'schuld',   label: 'Schulden in kaart + afbetalingsplan' },
-  { key: 'buffer',   label: 'Eerste 500 euro buffer opgebouwd' },
-  { key: 'kleding',  label: 'Sportkleding aangeschaft (Decathlon/Zeeman)' }
+  { key: 'investor', label: 'Externe afspraken bekrachtigd' },
+  { key: 'schuld',   label: 'Financiele situatie in kaart' },
+  { key: 'buffer',   label: 'Eerste buffer opgebouwd' },
+  { key: 'kleding',  label: 'Sportkleding aangeschaft' }
 ];
 
 // ─────────────────────────────────────────────────────────
@@ -776,9 +775,9 @@ var ACHIEVEMENTS_CONFIG = [
   { id: 'c90',   icon: '💎', name: 'De 4 Maanden',       desc: '90 dagen clean',            xp: 1000, getStatus: function() { var c = cleanStreak(); return c !== null && c >= 90; } },
   { id: 'sp10',  icon: '✦', name: 'Eerste Bewijs',      desc: '10 sophro bewijsstukken',   xp: 100,  getStatus: function() { return sophro.length >= 10; } },
   { id: 'sp50',  icon: '⭐', name: 'Aanklager Verliest', desc: '50 sophro bewijsstukken',   xp: 250,  getStatus: function() { return sophro.length >= 50; } },
-  { id: 'b80',   icon: '💥', name: 'Oud Niveau Bench',   desc: 'Bench 80 kg bereikt',       xp: 200,  getStatus: function() { return lifts.bench >= 80; } },
+  { id: 'b80',   icon: '💥', name: 'Bench 80',           desc: 'Bench 80 kg bereikt',       xp: 200,  getStatus: function() { return lifts.bench >= 80; } },
   { id: 'd140',  icon: '⚡', name: 'Deadlift King',      desc: 'Deadlift 140 kg bereikt',   xp: 200,  getStatus: function() { return lifts.deadlift >= 140; } },
-  { id: 'rij',   icon: '🚗', name: 'Hans',               desc: 'Rijbewijs geregeld',        xp: 300,  getStatus: function() { return rijbewijs === true; } },
+  { id: 'rij',   icon: '🚗', name: 'Sleutel',            desc: 'Mijlpaal bereikt',          xp: 300,  getStatus: function() { return rijbewijs === true; } },
   { id: 'p5',    icon: '🏕', name: 'Ermelo',             desc: '5 perfecte dagen op rij',   xp: 300,  getStatus: function() { return getPerfectStreak() >= 5; } },
   { id: 'allms', icon: '🏆', name: 'Sophrosyne',         desc: 'Alle fase 1 mijlpalen',     xp: 500,  getStatus: function() {
     for (var i = 0; i < MILESTONES_CONFIG.length; i++) {
@@ -1526,7 +1525,7 @@ function renderRijbewijs() {
   var btn   = document.getElementById('rijbewijs-btn');
   if (badge) {
     badge.className = 'badge ' + (rijbewijs ? 'badge-green' : 'badge-orange');
-    badge.textContent = rijbewijs ? 'GEREGELD' : 'kwijt';
+    badge.textContent = rijbewijs ? 'GEREGELD' : 'open';
   }
   if (btn) {
     btn.textContent = rijbewijs ? 'Markeer als open' : 'Markeer als geregeld';
@@ -1538,7 +1537,7 @@ function toggleRijbewijs() {
   storageSet('rijbewijs', rijbewijs);
   if (rijbewijs) {
     checkAchievements();
-    showToast('RIJBEWIJS GEREGELD +300 XP');
+    showToast('MIJLPAAL GEREGELD +300 XP');
   }
   renderRijbewijs();
 }
