@@ -6,8 +6,11 @@
   <meta name="theme-color" content="#07090F">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Founder OS">
+  <meta name="apple-mobile-web-app-title" content="Personal OS">
   <title>Personal OS</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -317,19 +320,19 @@
         <div class="grid-3">
           <div style="text-align:center">
             <div class="streak-val streak-zero" id="streak-wiet">-</div>
-            <div class="big-label" style="font-size:8px;margin-top:2px">Habit A</div>
+            <div class="big-label streak-label" style="font-size:8px;margin-top:2px;cursor:pointer" id="streak-label-A" onclick="renameStreak('A')">Habit A</div>
             <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
             <input type="date" id="streak-wiet-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
           </div>
           <div style="text-align:center">
             <div class="streak-val streak-zero" id="streak-sig">-</div>
-            <div class="big-label" style="font-size:8px;margin-top:2px">Habit B</div>
+            <div class="big-label streak-label" style="font-size:8px;margin-top:2px;cursor:pointer" id="streak-label-B" onclick="renameStreak('B')">Habit B</div>
             <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
             <input type="date" id="streak-sig-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
           </div>
           <div style="text-align:center">
             <div class="streak-val streak-zero" id="streak-alc">-</div>
-            <div class="big-label" style="font-size:8px;margin-top:2px">Habit C</div>
+            <div class="big-label streak-label" style="font-size:8px;margin-top:2px;cursor:pointer" id="streak-label-C" onclick="renameStreak('C')">Habit C</div>
             <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
             <input type="date" id="streak-alc-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
           </div>
@@ -422,7 +425,7 @@
 
       <div class="card" style="text-align:center;padding:20px 14px">
         <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);margin-bottom:8px">HUIDIG LEVEL</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;color:var(--acc)" id="level-number">1</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;color:var(--acc);cursor:pointer;user-select:none" id="level-number" onpointerdown="resetLongPressStart()" onpointerup="resetLongPressEnd()" onpointercancel="resetLongPressEnd()" onpointerleave="resetLongPressEnd()">1</div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);letter-spacing:2px;margin-top:2px" id="level-title">DE TOESCHOUWER</div>
         <div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--dim)" id="level-xp-info"></div>
         <div class="progress-bar" style="margin-top:10px;height:5px"><div class="progress-fill" id="level-xp-bar" style="background:var(--acc)"></div></div>
@@ -483,6 +486,15 @@
         <div class="card-title">Sleutel Mijlpaal +300 XP</div>
         <div class="stat-row"><span class="stat-label">Status</span><span class="badge" id="rijbewijs-badge">open</span></div>
         <div class="stat-row"><span class="stat-label">Markeer als geregeld</span><button class="btn-ghost" id="rijbewijs-btn" onclick="toggleRijbewijs()">Markeer</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Backup & Data</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-ghost" onclick="exportData()">EXPORTEER JSON</button>
+          <button class="btn-ghost" onclick="importData()">IMPORTEER BACKUP</button>
+        </div>
+        <div style="font-size:10px;color:var(--dim);margin-top:11px;font-family:'DM Mono',monospace;line-height:1.5;letter-spacing:0.5px">Tip: lang indrukken op het level-getal hierboven om alle data te wissen. Backup-bestand bevat alles in localStorage en kan teruggezet worden op een ander toestel.</div>
       </div>
 
       <div class="card" style="background:rgba(200,255,0,0.02);border-color:rgba(200,255,0,0.1)">
@@ -583,7 +595,7 @@ function storageSet(key, val) {
 // STATE
 // ─────────────────────────────────────────────────────────
 
-var streaks    = storageGet('streaks',    { wiet: '', sig: '', alc: '' });
+var streaks    = storageGet('streaks',    { wiet: '', sig: '', alc: '', labelA: '', labelB: '', labelC: '' });
 var lifts      = storageGet('lifts',      { bench: 60, deadlift: 110, squat: 75 });
 var sessions   = storageGet('sessions',   []);
 var finance    = storageGet('finance',    { debt: 0, buffer: 0 });
@@ -729,6 +741,77 @@ function awardXP(id, xp, label, animate) {
   updateXPBar();
   checkLevelUp();
   return true;
+}
+
+function revokeXP(id) {
+  for (var i = 0; i < xpLog.length; i++) {
+    if (xpLog[i].id === id) {
+      xpLog.splice(i, 1);
+      storageSet('xpLog', xpLog);
+      return true;
+    }
+  }
+  return false;
+}
+
+function recalcAchievements() {
+  var newUnlocked = [];
+  for (var i = 0; i < ACHIEVEMENTS_CONFIG.length; i++) {
+    var a = ACHIEVEMENTS_CONFIG[i];
+    var met = a.getStatus();
+    var wasUnlocked = false;
+    for (var j = 0; j < unlocked.length; j++) {
+      if (unlocked[j] === a.id) { wasUnlocked = true; break; }
+    }
+    if (met && !wasUnlocked) {
+      xpLog.push({ id: 'ach_' + a.id, xp: a.xp, label: 'Achievement: ' + a.name, date: todayStr() });
+      newUnlocked.push(a.id);
+    } else if (!met && wasUnlocked) {
+      revokeXP('ach_' + a.id);
+    } else if (met) {
+      newUnlocked.push(a.id);
+    }
+  }
+  unlocked = newUnlocked;
+  storageSet('unlocked', unlocked);
+  storageSet('xpLog', xpLog);
+}
+
+function recalcStreakBonuses() {
+  var c = cleanStreak();
+  var bonuses = [
+    { days: 7,  xp: 150,  id: 'streak_7' },
+    { days: 21, xp: 300,  id: 'streak_21' },
+    { days: 30, xp: 500,  id: 'streak_30' },
+    { days: 60, xp: 750,  id: 'streak_60' },
+    { days: 90, xp: 1000, id: 'streak_90' }
+  ];
+  for (var i = 0; i < bonuses.length; i++) {
+    var b = bonuses[i];
+    var met = c !== null && c >= b.days;
+    if (!met && hasXP(b.id)) {
+      revokeXP(b.id);
+    } else if (met && !hasXP(b.id)) {
+      awardXP(b.id, b.xp, b.days + ' dagen clean', false);
+    }
+  }
+}
+
+function revokePerfectIfBroken(date) {
+  if (!hasXP('perfect_' + date)) return;
+  var rkD = false, trD = false, spD = false;
+  for (var i = 0; i < rechtbank.length; i++) { if (rechtbank[i].date === date) { rkD = true; break; } }
+  for (var i = 0; i < sessions.length; i++) { if (sessions[i].date === date) { trD = true; break; } }
+  for (var i = 0; i < sophro.length; i++) { if (sophro[i].date === date) { spD = true; break; } }
+  if (!rkD || !trD || !spD) {
+    revokeXP('perfect_' + date);
+    var pdFiltered = [];
+    for (var i = 0; i < perfectDays.length; i++) {
+      if (perfectDays[i] !== date) pdFiltered.push(perfectDays[i]);
+    }
+    perfectDays = pdFiltered;
+    storageSet('perfectDays', perfectDays);
+  }
 }
 
 function updateXPBar() {
@@ -1129,7 +1212,13 @@ function deleteRechtbankEntry(date) {
   }
   rechtbank = filtered;
   storageSet('rechtbank', rechtbank);
+  revokeXP('rk_' + date);
+  revokePerfectIfBroken(date);
+  recalcAchievements();
+  updateXPBar();
   renderRechtbank();
+  renderHeader();
+  if (activeTab === 'overzicht') renderOverzicht();
 }
 
 // ─────────────────────────────────────────────────────────
@@ -1140,6 +1229,11 @@ function renderGezondheid() {
   var streakKeys = ['wiet', 'sig', 'alc'];
   var streakEls = ['streak-wiet', 'streak-sig', 'streak-alc'];
   var dateEls = ['streak-wiet-date', 'streak-sig-date', 'streak-alc-date'];
+  var labelKeys = ['A', 'B', 'C'];
+  for (var i = 0; i < labelKeys.length; i++) {
+    var lblEl = document.getElementById('streak-label-' + labelKeys[i]);
+    if (lblEl) lblEl.textContent = streaks['label' + labelKeys[i]] || ('Habit ' + labelKeys[i]);
+  }
 
   for (var i = 0; i < streakKeys.length; i++) {
     var d = daysSince(streaks[streakKeys[i]]);
@@ -1212,12 +1306,24 @@ function saveStreaks() {
   streaks.sig  = sEl ? sEl.value : '';
   streaks.alc  = aEl ? aEl.value : '';
   storageSet('streaks', streaks);
-  checkStreakBonuses();
-  checkAchievements();
+  recalcStreakBonuses();
+  recalcAchievements();
   checkPerfectDay();
+  updateXPBar();
   renderGezondheid();
   renderHeader();
   if (activeTab === 'overzicht') renderOverzicht();
+}
+
+function renameStreak(key) {
+  var current = streaks['label' + key] || '';
+  var defaultLabel = 'Habit ' + key;
+  var newLabel = window.prompt('Naam voor deze streak (max 12 tekens):', current || defaultLabel);
+  if (newLabel === null) return;
+  newLabel = newLabel.trim().slice(0, 12);
+  streaks['label' + key] = newLabel;
+  storageSet('streaks', streaks);
+  renderGezondheid();
 }
 
 function logTraining() {
@@ -1312,9 +1418,25 @@ function addSophroProof() {
 }
 
 function deleteSophro(idx) {
+  var removed = sophro[idx];
   sophro.splice(idx, 1);
   storageSet('sophro', sophro);
+  if (removed) {
+    var maxN = -1;
+    for (var i = 0; i < xpLog.length; i++) {
+      var id = xpLog[i].id;
+      if (id.indexOf('sp_' + removed.date + '_') === 0) {
+        var n = parseInt(id.split('_').pop(), 10);
+        if (n > maxN) maxN = n;
+      }
+    }
+    if (maxN >= 0) revokeXP('sp_' + removed.date + '_' + maxN);
+    revokePerfectIfBroken(removed.date);
+  }
+  recalcAchievements();
+  updateXPBar();
   renderSophro();
+  if (activeTab === 'overzicht') renderOverzicht();
 }
 
 // ─────────────────────────────────────────────────────────
@@ -1540,6 +1662,93 @@ function toggleRijbewijs() {
     showToast('MIJLPAAL GEREGELD +300 XP');
   }
   renderRijbewijs();
+}
+
+// ─────────────────────────────────────────────────────────
+// BACKUP / RESET
+// ─────────────────────────────────────────────────────────
+
+function exportData() {
+  var data = {};
+  for (var i = 0; i < localStorage.length; i++) {
+    var k = localStorage.key(i);
+    if (k && k.indexOf('eOS2_') === 0) {
+      data[k] = localStorage.getItem(k);
+    }
+  }
+  data.__exportedAt = new Date().toISOString();
+  data.__schema = 'personal-os-v1';
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'personal-os-backup-' + todayStr() + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+  showToast('BACKUP GEDOWNLOAD');
+}
+
+function importData() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json,.json';
+  input.onchange = function(e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var data;
+      try {
+        data = JSON.parse(ev.target.result);
+      } catch (err) {
+        window.alert('Bestand niet leesbaar als JSON.');
+        return;
+      }
+      if (!window.confirm('Backup terugzetten? Dit overschrijft alle huidige data op dit toestel.')) return;
+      var existingKeys = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf('eOS2_') === 0) existingKeys.push(k);
+      }
+      for (var i = 0; i < existingKeys.length; i++) localStorage.removeItem(existingKeys[i]);
+      var imported = 0;
+      for (var key in data) {
+        if (Object.prototype.hasOwnProperty.call(data, key) && key.indexOf('eOS2_') === 0) {
+          localStorage.setItem(key, data[key]);
+          imported++;
+        }
+      }
+      window.alert(imported + ' velden geimporteerd. App wordt opnieuw geladen.');
+      window.location.reload();
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+var resetLongPressTimer = null;
+function resetLongPressStart() {
+  resetLongPressEnd();
+  resetLongPressTimer = setTimeout(function() {
+    resetLongPressTimer = null;
+    if (window.confirm('ALLE DATA WISSEN? Dit kan niet ongedaan gemaakt worden. Maak eerst een backup als je twijfelt.')) {
+      var keys = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf('eOS2_') === 0) keys.push(k);
+      }
+      for (var i = 0; i < keys.length; i++) localStorage.removeItem(keys[i]);
+      window.location.reload();
+    }
+  }, 1500);
+}
+function resetLongPressEnd() {
+  if (resetLongPressTimer) {
+    clearTimeout(resetLongPressTimer);
+    resetLongPressTimer = null;
+  }
 }
 
 // ─────────────────────────────────────────────────────────
