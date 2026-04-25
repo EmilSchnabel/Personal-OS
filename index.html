@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#07090F">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Founder OS">
+  <title>Founder OS — Emil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #07090F;
+      --surf:   #0D1117;
+      --border: #1C2333;
+      --acc:    #C8FF00;
+      --orange: #FF6640;
+      --green:  #22C55E;
+      --purple: #8B8BFF;
+      --text:   #E6EDF3;
+      --muted:  #5A6478;
+      --dim:    #3D4D5E;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; overscroll-behavior: none; }
+    #app { display: flex; flex-direction: column; height: 100%; max-width: 520px; margin: 0 auto; }
+
+    /* Header */
+    .header { padding: 12px 16px 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 4px; color: var(--acc); }
+    .logo-sub { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--dim); letter-spacing: 1.5px; margin-top: 2px; }
+    .header-badges { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+
+    /* XP Strip */
+    .xp-strip { padding: 7px 16px 8px; border-bottom: 1px solid var(--border); background: var(--surf); flex-shrink: 0; }
+    .xp-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    .xp-level-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--acc); }
+    .xp-number { font-family: 'Bebas Neue', sans-serif; font-size: 15px; color: var(--acc); letter-spacing: 1px; }
+    .xp-bar-bg { background: var(--border); border-radius: 4px; height: 3px; overflow: hidden; }
+    .xp-bar-fill { height: 100%; background: var(--acc); border-radius: 4px; transition: width 0.5s ease; }
+    .xp-next-label { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--dim); margin-top: 3px; text-align: right; }
+
+    /* Content */
+    .content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 14px 86px; }
+    .content section { display: none; }
+    .content section.active { display: block; }
+
+    /* Nav */
+    .nav { display: flex; border-top: 1px solid var(--border); background: var(--surf); flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
+    .nav-btn { flex: 1; padding: 8px 2px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; background: none; border: none; color: var(--dim); font-family: 'DM Mono', monospace; font-size: 7px; letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.2s; user-select: none; }
+    .nav-btn .nav-icon { font-size: 16px; line-height: 1; }
+    .nav-btn.active { color: var(--acc); }
+
+    /* Cards */
+    .card { background: var(--surf); border: 1px solid var(--border); border-radius: 10px; padding: 13px; margin-bottom: 9px; }
+    .card-title { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 11px; }
+
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
+
+    /* Badges */
+    .badge { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.5px; font-weight: 500; white-space: nowrap; }
+    .badge-green  { background: rgba(34,197,94,0.12);  color: var(--green); }
+    .badge-lime   { background: rgba(200,255,0,0.12);  color: var(--acc); }
+    .badge-orange { background: rgba(255,102,64,0.12); color: var(--orange); }
+    .badge-muted  { background: rgba(90,100,120,0.12); color: var(--muted); }
+    .badge-purple { background: rgba(139,139,255,0.12);color: var(--purple); }
+
+    /* Form */
+    input[type="text"], input[type="number"], input[type="date"], textarea, select {
+      width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 7px;
+      padding: 9px 11px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.2s; -webkit-appearance: none; appearance: none;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--acc); }
+    textarea { resize: vertical; min-height: 72px; line-height: 1.6; }
+    .field { margin-bottom: 9px; }
+    .field-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--dim); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; display: block; }
+
+    /* Buttons */
+    .btn { background: var(--acc); color: var(--bg); border: none; border-radius: 7px; padding: 10px 16px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; display: inline-block; user-select: none; }
+    .btn:active { opacity: 0.75; }
+    .btn-small { background: var(--acc); color: var(--bg); border: none; border-radius: 5px; padding: 6px 11px; font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 700; letter-spacing: 1px; cursor: pointer; }
+    .btn-small:disabled { background: var(--border); color: var(--dim); cursor: not-allowed; }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 7px; padding: 7px 12px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; cursor: pointer; text-transform: uppercase; }
+
+    /* Progress */
+    .progress-bar { background: var(--border); border-radius: 4px; height: 4px; overflow: hidden; margin: 5px 0 2px; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+
+    /* Rows */
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #0F1520; gap: 8px; }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { font-size: 13px; color: var(--muted); flex: 1; }
+
+    /* Quests */
+    .quest-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #0F1520; }
+    .quest-item:last-child { border-bottom: none; }
+    .quest-circle { width: 20px; height: 20px; border: 1.5px solid var(--border); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+    .quest-circle.done { background: var(--acc); border-color: var(--acc); }
+    .quest-label { font-size: 13px; color: var(--muted); flex: 1; }
+    .quest-label.done { color: var(--dim); }
+    .quest-xp { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--acc); flex-shrink: 0; }
+    .quest-xp.done { color: var(--dim); }
+
+    /* Achievements */
+    .ach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 4px; }
+    .ach-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 8px; text-align: center; position: relative; }
+    .ach-card.unlocked { border-color: rgba(200,255,0,0.3); background: rgba(200,255,0,0.03); }
+    .ach-icon { font-size: 22px; margin-bottom: 4px; filter: grayscale(1) opacity(0.25); }
+    .ach-card.unlocked .ach-icon { filter: none; }
+    .ach-name { font-size: 11px; font-weight: 600; color: var(--dim); }
+    .ach-card.unlocked .ach-name { color: var(--text); }
+    .ach-desc { font-size: 9px; color: var(--dim); margin-top: 2px; font-family: 'DM Mono', monospace; line-height: 1.3; }
+    .ach-card.unlocked .ach-desc { color: var(--muted); }
+    .ach-xp-badge { position: absolute; top: 5px; right: 6px; font-family: 'Bebas Neue', sans-serif; font-size: 11px; color: var(--acc); opacity: 0; }
+    .ach-card.unlocked .ach-xp-badge { opacity: 1; }
+
+    /* Rewards */
+    .reward-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; transition: border-color 0.3s; }
+    .reward-card.reached { border-color: rgba(200,255,0,0.35); }
+    .reward-level-label { font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: var(--acc); letter-spacing: 2px; }
+    .reward-text { font-size: 13px; color: var(--muted); margin: 3px 0 8px; }
+    .reward-claimed-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); letter-spacing: 1px; }
+
+    /* Records */
+    .record-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #0F1520; }
+    .record-row:last-child { border-bottom: none; }
+    .record-label { font-size: 12px; color: var(--muted); }
+    .record-value { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--acc); }
+
+    /* Phases */
+    .phase-bar { display: flex; gap: 7px; }
+    .phase-item { flex: 1; padding: 10px 8px; border-radius: 8px; border: 1px solid var(--border); }
+    .phase-item.active { border-color: var(--acc); background: rgba(200,255,0,0.04); }
+    .phase-num { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--border); line-height: 1; }
+    .phase-item.active .phase-num { color: var(--acc); }
+    .phase-name { font-weight: 700; font-size: 10px; margin-top: 2px; }
+    .phase-period { font-size: 8px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+    /* Milestones */
+    .milestone { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid #0F1520; cursor: pointer; user-select: none; }
+    .milestone:last-child { border-bottom: none; }
+    .milestone-box { width: 17px; height: 17px; border: 1px solid var(--border); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-top: 1px; }
+    .milestone-box.done { background: var(--acc); border-color: var(--acc); }
+    .milestone-text { font-size: 13px; color: var(--muted); line-height: 1.4; }
+    .milestone-text.done { color: var(--dim); text-decoration: line-through; }
+
+    /* Lifts */
+    .lift-row { margin-bottom: 12px; }
+    .lift-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
+    .lift-current { color: var(--acc); font-family: 'DM Mono', monospace; font-weight: 500; }
+    .lift-goal { color: var(--dim); font-family: 'DM Mono', monospace; }
+    .lift-pct { font-size: 9px; color: var(--dim); font-family: 'DM Mono', monospace; margin-top: 1px; }
+
+    /* Misc */
+    .anker-item { display: flex; align-items: flex-start; gap: 9px; padding: 8px 0; border-bottom: 1px solid #0F1520; }
+    .anker-item:last-child { border-bottom: none; }
+    .anker-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .anker-text { font-size: 13px; color: var(--muted); line-height: 1.4; }
+    .quote { border-left: 2px solid var(--acc); padding: 8px 12px; margin: 11px 0; font-size: 11px; color: var(--muted); font-style: italic; line-height: 1.7; }
+    .entry { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 11px; margin-bottom: 7px; position: relative; }
+    .entry-date { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+    .entry-sublabel { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin: 7px 0 3px; }
+    .entry-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .delete-btn { position: absolute; top: 9px; right: 9px; background: none; border: none; color: var(--dim); cursor: pointer; font-size: 13px; padding: 2px 5px; }
+    .delete-btn:hover { color: var(--orange); }
+    .streak-val { font-family: 'Bebas Neue', sans-serif; font-size: 42px; line-height: 1; color: var(--acc); }
+    .streak-zero { color: var(--border); }
+    .big-num { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; }
+    .big-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--dim); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px; }
+    .display-huge { font-family: 'Bebas Neue', sans-serif; font-size: 50px; line-height: 1; color: var(--acc); }
+
+    /* Level-up overlay */
+    .levelup-overlay { position: fixed; inset: 0; background: rgba(7,9,15,0.97); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.4s; text-align: center; padding: 20px; }
+    .levelup-overlay.show { opacity: 1; pointer-events: all; }
+    .lu-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+    .lu-number { font-family: 'Bebas Neue', sans-serif; font-size: 110px; color: var(--acc); line-height: 1; animation: lvlpulse 1s ease infinite; }
+    .lu-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--text); letter-spacing: 3px; margin-top: 4px; }
+    .lu-subtitle { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1.5px; margin-top: 18px; line-height: 1.7; }
+    .lu-close-btn { margin-top: 30px; }
+    @keyframes lvlpulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+
+    /* XP float */
+    .xp-float { position: fixed; font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--acc); pointer-events: none; z-index: 9998; animation: floatup 1.3s ease forwards; }
+    @keyframes floatup { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-60px); } }
+
+    /* Achievement flash */
+    .ach-flash { position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); background: var(--surf); border: 1px solid var(--acc); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; z-index: 9997; opacity: 0; pointer-events: none; transition: opacity 0.3s; white-space: nowrap; }
+    .ach-flash.show { opacity: 1; }
+    .ach-flash-icon { font-size: 20px; }
+    .ach-flash-text-top { font-size: 9px; font-family: 'DM Mono', monospace; color: var(--acc); letter-spacing: 1px; }
+    .ach-flash-text-name { font-size: 12px; color: var(--text); font-weight: 600; margin-top: 1px; }
+
+    /* Toast */
+    #toast { position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%); background: var(--acc); color: var(--bg); font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 1px; padding: 7px 14px; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 9995; white-space: nowrap; }
+    #toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <header class="header">
+    <div>
+      <div class="logo">FOUNDER OS</div>
+      <div class="logo-sub" id="header-date"></div>
+    </div>
+    <div class="header-badges" id="header-badges"></div>
+  </header>
+
+  <div class="xp-strip">
+    <div class="xp-top">
+      <div class="xp-level-label" id="xp-level-label">LVL 1 - DE TOESCHOUWER</div>
+      <div class="xp-number" id="xp-number">0 XP</div>
+    </div>
+    <div class="xp-bar-bg"><div class="xp-bar-fill" id="xp-bar-fill" style="width:0%"></div></div>
+    <div class="xp-next-label" id="xp-next-label"></div>
+  </div>
+
+  <main class="content">
+
+    <!-- OVERZICHT -->
+    <section id="sec-overzicht" class="active">
+
+      <div class="card">
+        <div class="card-title">Fase</div>
+        <div class="phase-bar" id="phase-bar"></div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:9px">
+        <div class="card" style="text-align:center;margin-bottom:0;padding:11px 6px">
+          <div class="card-title" style="margin-bottom:5px">Lancering</div>
+          <div class="display-huge" id="ov-launch" style="font-size:34px">-</div>
+          <div class="big-label">dagen</div>
+        </div>
+        <div class="card" style="text-align:center;margin-bottom:0;padding:11px 6px">
+          <div class="card-title" style="margin-bottom:5px">Clean</div>
+          <div class="display-huge" id="ov-clean" style="font-size:34px">-</div>
+          <div class="big-label">dagen</div>
+        </div>
+        <div class="card" style="text-align:center;margin-bottom:0;padding:11px 6px">
+          <div class="card-title" style="margin-bottom:5px">Training</div>
+          <div class="display-huge" id="ov-training" style="font-size:34px">0</div>
+          <div class="big-label">/5 wk</div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:rgba(200,255,0,0.2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+          <div class="card-title" style="margin-bottom:0">Dagelijkse Quests</div>
+          <span id="quest-count-badge" class="badge badge-muted">0/4</span>
+        </div>
+        <div id="quest-list"></div>
+        <div id="perfect-day-banner" style="display:none;margin-top:9px;padding:9px 11px;background:rgba(200,255,0,0.06);border-radius:7px;border:1px solid rgba(200,255,0,0.2)">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--acc)">PERFECTE DAG +100 XP</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Alle 4 quests voltooid. Ermelo-gevoel.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ankers - Bewijs dat het bestaat</div>
+        <div class="anker-item">
+          <div class="anker-icon">🐴</div>
+          <div class="anker-text"><strong style="color:var(--text)">Bento</strong> — Pure vrijheid. Het bestaat. Het is van jou.</div>
+        </div>
+        <div class="anker-item">
+          <div class="anker-icon">🏕</div>
+          <div class="anker-text"><strong style="color:var(--text)">Ermelo</strong> — Erbij horen zonder het te verdienen. Dat bestaat.</div>
+        </div>
+        <div class="anker-item">
+          <div class="anker-icon">✦</div>
+          <div class="anker-text"><strong style="color:var(--text)">De 4 maanden</strong> — Jan-Apr 2025. Licht. Scherp. Aanwezig. Het wacht.</div>
+        </div>
+      </div>
+
+      <div class="quote">"Je hoeft niet af te zijn om te beginnen. Je mag beginnen nu met de problemen erbij, met alles wat nog niet klopt maar wat van jou is."</div>
+
+    </section>
+
+    <!-- RECHTBANK -->
+    <section id="sec-rechtbank">
+      <div class="card" style="border-color:rgba(200,255,0,0.25)">
+        <div class="card-title">Ochtendrechtbank - <span id="rk-today-label"></span></div>
+        <div class="field">
+          <label class="field-label">Wat zegt de aanklager vandaag?</label>
+          <textarea id="rk-aanklager" placeholder="De stem die als eerste spreekt. Schrijf hem op."></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label">Mijn verweer</label>
+          <textarea id="rk-verweer" placeholder="Een concreet feit weerlegt de aanklager al."></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button class="btn" onclick="saveRechtbank()">OPSLAAN +50 XP</button>
+          <span id="rk-save-label"></span>
+        </div>
+      </div>
+
+      <div class="card" style="text-align:center">
+        <div class="card-title">Consecutieve check-ins</div>
+        <div class="display-huge" id="rk-streak-num">0</div>
+        <div class="big-label">dagen</div>
+      </div>
+
+      <div class="quote">"De aanklager spreekt altijd als eerste. Maar hij heeft het woord niet als enige."</div>
+
+      <div id="rk-history"></div>
+    </section>
+
+    <!-- GEZONDHEID -->
+    <section id="sec-gezondheid">
+      <div class="card">
+        <div class="card-title">Stop Streaks</div>
+        <div class="grid-3">
+          <div style="text-align:center">
+            <div class="streak-val streak-zero" id="streak-wiet">-</div>
+            <div class="big-label" style="font-size:8px;margin-top:2px">Wiet</div>
+            <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
+            <input type="date" id="streak-wiet-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
+          </div>
+          <div style="text-align:center">
+            <div class="streak-val streak-zero" id="streak-sig">-</div>
+            <div class="big-label" style="font-size:8px;margin-top:2px">Sigaretten</div>
+            <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
+            <input type="date" id="streak-sig-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
+          </div>
+          <div style="text-align:center">
+            <div class="streak-val streak-zero" id="streak-alc">-</div>
+            <div class="big-label" style="font-size:8px;margin-top:2px">Alcohol</div>
+            <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
+            <input type="date" id="streak-alc-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Training Log +75 XP</div>
+        <div class="field">
+          <select id="tr-workout">
+            <option value="">Kies workout...</option>
+            <option value="Push A - Bench Press">Push A - Bench Press</option>
+            <option value="Pull A - Deadlift">Pull A - Deadlift</option>
+            <option value="Legs A - Squat">Legs A - Squat</option>
+            <option value="Push B - Overhead Press">Push B - Overhead Press</option>
+            <option value="Pull B + Legs B">Pull B + Legs B</option>
+            <option value="Rust">Rust</option>
+          </select>
+        </div>
+        <div class="grid-3">
+          <div class="field"><label class="field-label">Bench kg</label><input type="number" id="tr-bench" min="0" max="300" value="60" style="padding:8px 6px"></div>
+          <div class="field"><label class="field-label">Deadlift kg</label><input type="number" id="tr-deadlift" min="0" max="400" value="110" style="padding:8px 6px"></div>
+          <div class="field"><label class="field-label">Squat kg</label><input type="number" id="tr-squat" min="0" max="300" value="75" style="padding:8px 6px"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button class="btn" onclick="logTraining()">LOG SESSIE</button>
+          <span id="tr-today-label"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Progressie</div>
+        <div class="lift-row">
+          <div class="lift-header"><span style="color:var(--muted)">Bench Press</span><div><span class="lift-current" id="prog-bench-val">60</span><span class="lift-goal"> / 80 kg</span></div></div>
+          <div class="progress-bar"><div class="progress-fill" id="prog-bench-bar" style="background:var(--acc)"></div></div>
+          <div class="lift-pct" id="prog-bench-pct"></div>
+        </div>
+        <div class="lift-row">
+          <div class="lift-header"><span style="color:var(--muted)">Deadlift</span><div><span class="lift-current" id="prog-dl-val">110</span><span class="lift-goal"> / 140 kg</span></div></div>
+          <div class="progress-bar"><div class="progress-fill" id="prog-dl-bar" style="background:var(--acc)"></div></div>
+          <div class="lift-pct" id="prog-dl-pct"></div>
+        </div>
+        <div class="lift-row">
+          <div class="lift-header"><span style="color:var(--muted)">Squat</span><div><span class="lift-current" id="prog-sq-val">75</span><span class="lift-goal"> / 100 kg</span></div></div>
+          <div class="progress-bar"><div class="progress-fill" id="prog-sq-bar" style="background:var(--acc)"></div></div>
+          <div class="lift-pct" id="prog-sq-pct"></div>
+        </div>
+      </div>
+
+      <div class="card" id="tr-history-card" style="display:none">
+        <div class="card-title">Sessie Geschiedenis</div>
+        <div id="tr-history-list"></div>
+      </div>
+    </section>
+
+    <!-- SOPHRO -->
+    <section id="sec-sophro">
+      <div class="card" style="background:rgba(200,255,0,0.03);border-color:rgba(200,255,0,0.2)">
+        <div class="card-title">Sophro Bewijs</div>
+        <div style="text-align:center;padding:8px 0 12px">
+          <div class="display-huge" id="sophro-count">0</div>
+          <div class="big-label">bewijsstukken</div>
+        </div>
+        <div class="quote" style="margin:0;font-size:11px">"Als de wereld vraagt wat je kunt, vraag ik wie je bent. Dat is het enige kompas dat ik heb leren vertrouwen."</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Nieuw bewijs +40 XP</div>
+        <div class="field">
+          <select id="sophro-type">
+            <option value="">Type actie...</option>
+            <option value="Kandidaat geholpen">Kandidaat geholpen</option>
+            <option value="Verbinding gemaakt">Verbinding gemaakt</option>
+            <option value="Systeem gebouwd of verbeterd">Systeem gebouwd of verbeterd</option>
+            <option value="Investor of jurist contact">Investor of jurist contact</option>
+            <option value="Mijlpaal behaald">Mijlpaal behaald</option>
+            <option value="Iets goeds voor een ander">Iets goeds voor een ander</option>
+            <option value="Andere">Andere</option>
+          </select>
+        </div>
+        <div class="field">
+          <textarea id="sophro-desc" placeholder="Wat heb je gedaan? Hoe klein ook - het telt." style="min-height:64px"></textarea>
+        </div>
+        <button class="btn" onclick="addSophroProof()">TOEVOEGEN</button>
+      </div>
+      <div id="sophro-list"></div>
+    </section>
+
+    <!-- LEVEL -->
+    <section id="sec-level">
+
+      <div class="card" style="text-align:center;padding:20px 14px">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);margin-bottom:8px">HUIDIG LEVEL</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;color:var(--acc)" id="level-number">1</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);letter-spacing:2px;margin-top:2px" id="level-title">DE TOESCHOUWER</div>
+        <div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--dim)" id="level-xp-info"></div>
+        <div class="progress-bar" style="margin-top:10px;height:5px"><div class="progress-fill" id="level-xp-bar" style="background:var(--acc)"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Echte Beloningen</div>
+        <div style="font-size:11px;color:var(--dim);margin-bottom:10px;font-family:'DM Mono',monospace;line-height:1.5;letter-spacing:0.5px">Wat ga je kopen of doen als je dit level haalt?</div>
+        <div id="rewards-list"></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+          <div class="card-title" style="margin-bottom:0">Achievements</div>
+          <span class="badge badge-lime" id="ach-count-label">0/15</span>
+        </div>
+        <div class="ach-grid" id="ach-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Persoonlijke Records</div>
+        <div class="record-row"><span class="record-label">Langste clean streak</span><span class="record-value" id="rec-clean">-</span></div>
+        <div class="record-row"><span class="record-label">Langste rechtbank streak</span><span class="record-value" id="rec-rk">-</span></div>
+        <div class="record-row"><span class="record-label">Max bench PR</span><span class="record-value" id="rec-bench">-</span></div>
+        <div class="record-row"><span class="record-label">Max deadlift PR</span><span class="record-value" id="rec-dl">-</span></div>
+        <div class="record-row"><span class="record-label">Max squat PR</span><span class="record-value" id="rec-sq">-</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Financien</div>
+        <div class="grid-2" style="margin-bottom:8px">
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--orange);line-height:1">€<span id="fin-debt-display">0</span></div>
+            <div class="big-label" style="margin-bottom:4px">schulden</div>
+            <div class="progress-bar"><div class="progress-fill" id="fin-debt-bar" style="background:var(--orange)"></div></div>
+            <label class="field-label" style="margin-top:7px">Bedrag</label>
+            <input type="number" id="fin-debt-input" min="0" onchange="saveFinance()" style="font-size:12px;padding:8px 9px">
+          </div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--green);line-height:1">€<span id="fin-buffer-display">0</span></div>
+            <div class="big-label" style="margin-bottom:4px">buffer</div>
+            <div class="progress-bar"><div class="progress-fill" id="fin-buffer-bar" style="background:var(--green)"></div></div>
+            <label class="field-label" style="margin-top:7px">Bedrag</label>
+            <input type="number" id="fin-buffer-input" min="0" onchange="saveFinance()" style="font-size:12px;padding:8px 9px">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+          <div class="card-title" style="margin-bottom:0">Fase 1 Checklist +200 XP/stuk</div>
+          <span class="badge badge-lime" id="milestone-count-label">0/9</span>
+        </div>
+        <div id="milestone-list"></div>
+      </div>
+
+      <div class="card" style="border-color:rgba(139,139,255,0.3)">
+        <div class="card-title">Rijbewijs +300 XP</div>
+        <div class="stat-row"><span class="stat-label">Status</span><span class="badge" id="rijbewijs-badge">kwijt</span></div>
+        <div class="stat-row"><span class="stat-label">Markeer als geregeld</span><button class="btn-ghost" id="rijbewijs-btn" onclick="toggleRijbewijs()">Markeer</button></div>
+        <div class="quote" style="margin:10px 0 0;font-size:11px;font-style:normal">Het rijbewijs vertegenwoordigt de periode die je achter je laat.</div>
+      </div>
+
+      <div class="card" style="background:rgba(200,255,0,0.02);border-color:rgba(200,255,0,0.1)">
+        <div class="card-title">Visie op 35</div>
+        <div class="anker-item"><div class="anker-icon">👨‍👩‍👦</div><div class="anker-text">Mensen om je heen die blijven omdat ze willen</div></div>
+        <div class="anker-item"><div class="anker-icon">🏡</div><div class="anker-text">Ouders gezond, hen terugbetaald wat ze gaven</div></div>
+        <div class="anker-item"><div class="anker-icon">🌍</div><div class="anker-text">De wereld echt gezien, als iemand die keek</div></div>
+        <div class="anker-item"><div class="anker-icon">🌅</div><div class="anker-text">'s Ochtends wakker, even stil voor de rechtbank begint</div></div>
+        <div class="quote" style="margin-top:12px;margin-bottom:0">"Nog steeds zoekende. En daar vrede mee."<br><span style="font-size:9px;font-style:normal;color:var(--dim)">— Emil, Curacao, april 2026</span></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <nav class="nav">
+    <button class="nav-btn active" onclick="switchTab('overzicht')" id="nav-overzicht"><span class="nav-icon">◉</span><span>Basis</span></button>
+    <button class="nav-btn" onclick="switchTab('rechtbank')" id="nav-rechtbank"><span class="nav-icon">⚖</span><span>Rechtbank</span></button>
+    <button class="nav-btn" onclick="switchTab('gezondheid')" id="nav-gezondheid"><span class="nav-icon">🏋</span><span>Gezondheid</span></button>
+    <button class="nav-btn" onclick="switchTab('sophro')" id="nav-sophro"><span class="nav-icon">✦</span><span>Sophro</span></button>
+    <button class="nav-btn" onclick="switchTab('level')" id="nav-level"><span class="nav-icon">🏆</span><span>Level</span></button>
+  </nav>
+
+</div><!-- #app -->
+
+<!-- Level-up overlay -->
+<div class="levelup-overlay" id="levelup-overlay">
+  <div class="lu-label">LEVEL UP</div>
+  <div class="lu-number" id="lu-number">2</div>
+  <div class="lu-title" id="lu-title-text">DE WAARNEMER</div>
+  <div class="lu-subtitle" id="lu-subtitle"></div>
+  <button class="btn lu-close-btn" onclick="closeLevelUp()">DOORGAAN</button>
+</div>
+
+<!-- Achievement flash -->
+<div class="ach-flash" id="ach-flash">
+  <div class="ach-flash-icon" id="ach-flash-icon">✦</div>
+  <div>
+    <div class="ach-flash-text-top">ACHIEVEMENT UNLOCKED</div>
+    <div class="ach-flash-text-name" id="ach-flash-name">-</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+
+// ─────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────
+
+var LAUNCH_DATE = new Date('2027-01-01');
+var SOFT_DATE = new Date('2026-09-01');
+
+var LEVELS = [
+  { n: 1, title: 'De Toeschouwer', xp: 0,     sub: 'Je ziet het. Nu begin je het te begrijpen.' },
+  { n: 2, title: 'De Waarnemer',   xp: 500,   sub: 'Je observeert bewuster. De mist begint op te trekken.' },
+  { n: 3, title: 'De Deelnemer',   xp: 1500,  sub: 'Je staat niet meer aan de zijkant. Je doet mee.' },
+  { n: 4, title: 'De Bouwer',      xp: 3500,  sub: 'Je bouwt echt. Elke dag een steen meer.' },
+  { n: 5, title: 'De Ondernemer',  xp: 7000,  sub: 'Sophro leeft. De aanklager verliest terrein.' },
+  { n: 6, title: 'Sophrosyne',     xp: 12000, sub: 'Wie je bent als niemand kijkt. Dat is genoeg.' },
+  { n: 7, title: 'Emil',           xp: 20000, sub: 'Geen masker meer. Geen toeschouwer. Alleen jij.' }
+];
+
+var MILESTONES_CONFIG = [
+  { key: 'sport',    label: 'Sportschool ingeschreven + biometrische scan' },
+  { key: 'stop',     label: 'Stop datum ingesteld (wiet + sigaretten)' },
+  { key: 'jurist',   label: 'Jurist consulteren - ZW + bedingclausule' },
+  { key: 'bv',       label: 'BV opzetten via notaris' },
+  { key: 'holding',  label: 'Holding structuur opzetten' },
+  { key: 'investor', label: 'Investor contract tekenen' },
+  { key: 'schuld',   label: 'Schulden in kaart + afbetalingsplan' },
+  { key: 'buffer',   label: 'Eerste 500 euro buffer opgebouwd' },
+  { key: 'kleding',  label: 'Sportkleding aangeschaft (Decathlon/Zeeman)' }
+];
+
+// ─────────────────────────────────────────────────────────
+// STORAGE
+// ─────────────────────────────────────────────────────────
+
+function storageGet(key, defaultVal) {
+  try {
+    var val = localStorage.getItem('eOS2_' + key);
+    if (val === null) return defaultVal;
+    return JSON.parse(val);
+  } catch (e) {
+    return defaultVal;
+  }
+}
+
+function storageSet(key, val) {
+  try {
+    localStorage.setItem('eOS2_' + key, JSON.stringify(val));
+  } catch (e) {}
+}
+
+// ─────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────
+
+var streaks    = storageGet('streaks',    { wiet: '', sig: '', alc: '' });
+var lifts      = storageGet('lifts',      { bench: 60, deadlift: 110, squat: 75 });
+var sessions   = storageGet('sessions',   []);
+var finance    = storageGet('finance',    { debt: 0, buffer: 0 });
+var milestones = storageGet('milestones', {});
+var rechtbank  = storageGet('rechtbank',  []);
+var sophro     = storageGet('sophro',     []);
+var rijbewijs  = storageGet('rijbewijs',  false);
+var xpLog      = storageGet('xpLog',      []);
+var unlocked   = storageGet('unlocked',   []);
+var rewards    = storageGet('rewards',    {});
+var prevLevel  = storageGet('prevLevel',  1);
+var perfectDays = storageGet('perfectDays', []);
+
+// ─────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────
+
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function daysSince(dateStr) {
+  if (!dateStr) return null;
+  var diff = Date.now() - new Date(dateStr).getTime();
+  return Math.max(0, Math.floor(diff / 86400000));
+}
+
+function daysUntil(date) {
+  return Math.max(0, Math.floor((date.getTime() - Date.now()) / 86400000));
+}
+
+function calcPct(val, start, goal) {
+  if (goal === start) return 0;
+  var p = ((val - start) / (goal - start)) * 100;
+  return Math.min(100, Math.max(0, Math.round(p)));
+}
+
+function cleanStreak() {
+  var w = daysSince(streaks.wiet);
+  var s = daysSince(streaks.sig);
+  if (w === null && s === null) return null;
+  if (w === null) return s;
+  if (s === null) return w;
+  return Math.min(w, s);
+}
+
+function currentPhase() {
+  var now = Date.now();
+  if (now < new Date('2026-08-01').getTime()) return 1;
+  if (now < new Date('2027-01-01').getTime()) return 2;
+  return 3;
+}
+
+function getWeekStart() {
+  var d = new Date();
+  var day = d.getDay();
+  var diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function formatDate(ds) {
+  return new Date(ds + 'T12:00:00').toLocaleDateString('nl-NL', {
+    weekday: 'long', day: 'numeric', month: 'long'
+  });
+}
+
+function getRkStreak() {
+  var s = 0;
+  var d = new Date();
+  for (var i = 0; i < 400; i++) {
+    var ds = d.toISOString().split('T')[0];
+    var found = false;
+    for (var j = 0; j < rechtbank.length; j++) {
+      if (rechtbank[j].date === ds) { found = true; break; }
+    }
+    if (!found) break;
+    s++;
+    d.setDate(d.getDate() - 1);
+  }
+  return s;
+}
+
+function getPerfectStreak() {
+  var s = 0;
+  var d = new Date();
+  for (var i = 0; i < 200; i++) {
+    var ds = d.toISOString().split('T')[0];
+    var found = false;
+    for (var j = 0; j < perfectDays.length; j++) {
+      if (perfectDays[j] === ds) { found = true; break; }
+    }
+    if (!found) break;
+    s++;
+    d.setDate(d.getDate() - 1);
+  }
+  return s;
+}
+
+function hasXP(id) {
+  for (var i = 0; i < xpLog.length; i++) {
+    if (xpLog[i].id === id) return true;
+  }
+  return false;
+}
+
+// ─────────────────────────────────────────────────────────
+// XP SYSTEM
+// ─────────────────────────────────────────────────────────
+
+function getTotalXP() {
+  var total = 0;
+  for (var i = 0; i < xpLog.length; i++) {
+    total += xpLog[i].xp;
+  }
+  return total;
+}
+
+function getLevelInfo() {
+  var total = getTotalXP();
+  var cur = LEVELS[0];
+  for (var i = LEVELS.length - 1; i >= 0; i--) {
+    if (total >= LEVELS[i].xp) { cur = LEVELS[i]; break; }
+  }
+  var idx = 0;
+  for (var i = 0; i < LEVELS.length; i++) {
+    if (LEVELS[i].n === cur.n) { idx = i; break; }
+  }
+  var next = idx < LEVELS.length - 1 ? LEVELS[idx + 1] : null;
+  var progress = 100;
+  if (next) {
+    progress = Math.round(((total - cur.xp) / (next.xp - cur.xp)) * 100);
+  }
+  return { cur: cur, next: next, total: total, progress: progress };
+}
+
+function awardXP(id, xp, label, animate) {
+  if (hasXP(id)) return false;
+  xpLog.push({ id: id, xp: xp, label: label, date: todayStr() });
+  storageSet('xpLog', xpLog);
+  if (animate) showXPFloat('+' + xp + ' XP');
+  updateXPBar();
+  checkLevelUp();
+  return true;
+}
+
+function updateXPBar() {
+  var info = getLevelInfo();
+  var el1 = document.getElementById('xp-level-label');
+  var el2 = document.getElementById('xp-number');
+  var el3 = document.getElementById('xp-bar-fill');
+  var el4 = document.getElementById('xp-next-label');
+  if (el1) el1.textContent = 'LVL ' + info.cur.n + ' - ' + info.cur.title.toUpperCase();
+  if (el2) el2.textContent = info.total.toLocaleString('nl-NL') + ' XP';
+  if (el3) el3.style.width = info.progress + '%';
+  if (el4) {
+    if (info.next) {
+      el4.textContent = (info.next.xp - info.total).toLocaleString('nl-NL') + ' XP tot Level ' + info.next.n + ' - ' + info.next.title;
+    } else {
+      el4.textContent = 'MAX LEVEL BEREIKT';
+    }
+  }
+}
+
+function checkLevelUp() {
+  var info = getLevelInfo();
+  if (info.cur.n > prevLevel) {
+    prevLevel = info.cur.n;
+    storageSet('prevLevel', prevLevel);
+    showLevelUp(info.cur);
+  }
+}
+
+var ACHIEVEMENTS_CONFIG = [
+  { id: 'rk1',   icon: '⚖', name: 'Here We Go',        desc: 'Eerste rechtbank entry',    xp: 100,  getStatus: function() { return rechtbank.length >= 1; } },
+  { id: 'rk7',   icon: '🛡', name: 'Advocaat',           desc: '7 dagen rechtbank streak',  xp: 100,  getStatus: function() { return getRkStreak() >= 7; } },
+  { id: 'tr1',   icon: '💪', name: 'Eerste Rep',         desc: 'Eerste training gelogd',    xp: 100,  getStatus: function() { return sessions.length >= 1; } },
+  { id: 'tr21',  icon: '🐴', name: 'Bento Gevoel',       desc: '21 trainingen totaal',      xp: 150,  getStatus: function() {
+    var count = 0;
+    for (var i = 0; i < sessions.length; i++) {
+      if (sessions[i].workout !== 'Rust') count++;
+    }
+    return count >= 21;
+  }},
+  { id: 'c7',    icon: '🌱', name: 'Een Week',           desc: '7 dagen clean',             xp: 150,  getStatus: function() { var c = cleanStreak(); return c !== null && c >= 7; } },
+  { id: 'c21',   icon: '✨', name: 'De Mist Trekt Op',   desc: '21 dagen clean',            xp: 300,  getStatus: function() { var c = cleanStreak(); return c !== null && c >= 21; } },
+  { id: 'c30',   icon: '🌅', name: 'Licht',              desc: '30 dagen clean',            xp: 500,  getStatus: function() { var c = cleanStreak(); return c !== null && c >= 30; } },
+  { id: 'c90',   icon: '💎', name: 'De 4 Maanden',       desc: '90 dagen clean',            xp: 1000, getStatus: function() { var c = cleanStreak(); return c !== null && c >= 90; } },
+  { id: 'sp10',  icon: '✦', name: 'Eerste Bewijs',      desc: '10 sophro bewijsstukken',   xp: 100,  getStatus: function() { return sophro.length >= 10; } },
+  { id: 'sp50',  icon: '⭐', name: 'Aanklager Verliest', desc: '50 sophro bewijsstukken',   xp: 250,  getStatus: function() { return sophro.length >= 50; } },
+  { id: 'b80',   icon: '💥', name: 'Oud Niveau Bench',   desc: 'Bench 80 kg bereikt',       xp: 200,  getStatus: function() { return lifts.bench >= 80; } },
+  { id: 'd140',  icon: '⚡', name: 'Deadlift King',      desc: 'Deadlift 140 kg bereikt',   xp: 200,  getStatus: function() { return lifts.deadlift >= 140; } },
+  { id: 'rij',   icon: '🚗', name: 'Hans',               desc: 'Rijbewijs geregeld',        xp: 300,  getStatus: function() { return rijbewijs === true; } },
+  { id: 'p5',    icon: '🏕', name: 'Ermelo',             desc: '5 perfecte dagen op rij',   xp: 300,  getStatus: function() { return getPerfectStreak() >= 5; } },
+  { id: 'allms', icon: '🏆', name: 'Sophrosyne',         desc: 'Alle fase 1 mijlpalen',     xp: 500,  getStatus: function() {
+    for (var i = 0; i < MILESTONES_CONFIG.length; i++) {
+      if (!milestones[MILESTONES_CONFIG[i].key]) return false;
+    }
+    return true;
+  }}
+];
+
+function checkAchievements() {
+  for (var i = 0; i < ACHIEVEMENTS_CONFIG.length; i++) {
+    var a = ACHIEVEMENTS_CONFIG[i];
+    var alreadyUnlocked = false;
+    for (var j = 0; j < unlocked.length; j++) {
+      if (unlocked[j] === a.id) { alreadyUnlocked = true; break; }
+    }
+    if (!alreadyUnlocked && a.getStatus()) {
+      unlocked.push(a.id);
+      storageSet('unlocked', unlocked);
+      awardXP('ach_' + a.id, a.xp, 'Achievement: ' + a.name, false);
+      showAchFlash(a);
+      updateXPBar();
+    }
+  }
+}
+
+function checkStreakBonuses() {
+  var c = cleanStreak();
+  if (c === null) return;
+  var bonuses = [
+    { days: 7,  xp: 150,  id: 'streak_7' },
+    { days: 21, xp: 300,  id: 'streak_21' },
+    { days: 30, xp: 500,  id: 'streak_30' },
+    { days: 60, xp: 750,  id: 'streak_60' },
+    { days: 90, xp: 1000, id: 'streak_90' }
+  ];
+  for (var i = 0; i < bonuses.length; i++) {
+    if (c >= bonuses[i].days) {
+      awardXP(bonuses[i].id, bonuses[i].xp, bonuses[i].days + ' dagen clean', false);
+    }
+  }
+}
+
+function checkPerfectDay() {
+  var t = todayStr();
+  var rkDone = false;
+  for (var i = 0; i < rechtbank.length; i++) { if (rechtbank[i].date === t) { rkDone = true; break; } }
+  var trDone = false;
+  for (var i = 0; i < sessions.length; i++) { if (sessions[i].date === t) { trDone = true; break; } }
+  var spDone = false;
+  for (var i = 0; i < sophro.length; i++) { if (sophro[i].date === t) { spDone = true; break; } }
+  var cs = cleanStreak();
+  var cleanDone = cs !== null;
+  var allDone = rkDone && trDone && spDone && cleanDone;
+
+  if (allDone && !hasXP('perfect_' + t)) {
+    awardXP('perfect_' + t, 100, 'Perfecte dag', true);
+    var found = false;
+    for (var i = 0; i < perfectDays.length; i++) {
+      if (perfectDays[i] === t) { found = true; break; }
+    }
+    if (!found) {
+      perfectDays.unshift(t);
+      storageSet('perfectDays', perfectDays);
+    }
+  }
+
+  return { rk: rkDone, tr: trDone, sp: spDone, clean: cleanDone, all: allDone };
+}
+
+// ─────────────────────────────────────────────────────────
+// ANIMATIONS
+// ─────────────────────────────────────────────────────────
+
+function showXPFloat(text) {
+  var el = document.createElement('div');
+  el.className = 'xp-float';
+  el.textContent = text;
+  el.style.left = Math.round(window.innerWidth / 2 - 30) + 'px';
+  el.style.top = '60px';
+  document.body.appendChild(el);
+  setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 1400);
+}
+
+var luTimer = null;
+function showLevelUp(level) {
+  document.getElementById('lu-number').textContent = level.n;
+  document.getElementById('lu-title-text').textContent = level.title.toUpperCase();
+  document.getElementById('lu-subtitle').textContent = level.sub || '';
+  document.getElementById('levelup-overlay').classList.add('show');
+  if (luTimer) clearTimeout(luTimer);
+  luTimer = setTimeout(function() {
+    document.getElementById('levelup-overlay').classList.remove('show');
+  }, 9000);
+}
+
+function closeLevelUp() {
+  document.getElementById('levelup-overlay').classList.remove('show');
+}
+
+var achTimer = null;
+function showAchFlash(a) {
+  document.getElementById('ach-flash-icon').textContent = a.icon;
+  document.getElementById('ach-flash-name').textContent = a.name;
+  document.getElementById('ach-flash').classList.add('show');
+  if (achTimer) clearTimeout(achTimer);
+  achTimer = setTimeout(function() {
+    document.getElementById('ach-flash').classList.remove('show');
+  }, 3500);
+}
+
+var toastTimer = null;
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.classList.remove('show'); }, 1800);
+}
+
+// ─────────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────────
+
+var activeTab = 'overzicht';
+
+function switchTab(tab) {
+  var sections = document.querySelectorAll('.content section');
+  for (var i = 0; i < sections.length; i++) {
+    sections[i].classList.remove('active');
+  }
+  var navBtns = document.querySelectorAll('.nav-btn');
+  for (var i = 0; i < navBtns.length; i++) {
+    navBtns[i].classList.remove('active');
+  }
+  var sec = document.getElementById('sec-' + tab);
+  if (sec) sec.classList.add('active');
+  var navBtn = document.getElementById('nav-' + tab);
+  if (navBtn) navBtn.classList.add('active');
+  activeTab = tab;
+
+  if (tab === 'overzicht') renderOverzicht();
+  if (tab === 'rechtbank') renderRechtbank();
+  if (tab === 'gezondheid') renderGezondheid();
+  if (tab === 'sophro') renderSophro();
+  if (tab === 'level') renderLevel();
+}
+
+// ─────────────────────────────────────────────────────────
+// RENDER: HEADER
+// ─────────────────────────────────────────────────────────
+
+function renderHeader() {
+  var dateEl = document.getElementById('header-date');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString('nl-NL', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    }).toUpperCase();
+  }
+
+  var cs = cleanStreak();
+  var t = todayStr();
+  var trDone = false;
+  for (var i = 0; i < sessions.length; i++) { if (sessions[i].date === t) { trDone = true; break; } }
+  var rkDone = false;
+  for (var i = 0; i < rechtbank.length; i++) { if (rechtbank[i].date === t) { rkDone = true; break; } }
+
+  var badges = document.getElementById('header-badges');
+  if (!badges) return;
+
+  var b1cls = cs !== null ? 'badge-green' : 'badge-orange';
+  var b1txt = cs !== null ? (cs + 'D CLEAN') : 'STREAK';
+  var b2cls = trDone ? 'badge-green' : 'badge-lime';
+  var b2txt = trDone ? 'GYM' : 'GYM';
+  var b3cls = rkDone ? 'badge-green' : 'badge-muted';
+  var b3txt = rkDone ? 'RB' : 'RB';
+
+  badges.innerHTML =
+    '<span class="badge ' + b1cls + '">' + b1txt + '</span>' +
+    '<span class="badge ' + b2cls + '">' + b2txt + '</span>' +
+    '<span class="badge ' + b3cls + '">' + b3txt + '</span>';
+}
+
+// ─────────────────────────────────────────────────────────
+// RENDER: OVERZICHT
+// ─────────────────────────────────────────────────────────
+
+function renderOverzicht() {
+  var phase = currentPhase();
+  var phaseBar = document.getElementById('phase-bar');
+  if (phaseBar) {
+    var phaseData = [
+      { n: 1, label: 'Stabilisatie', period: "Nu - Jul '26" },
+      { n: 2, label: 'Opbouw',       period: "Aug - Dec '26" },
+      { n: 3, label: 'Lancering',    period: "Jan '27 -" }
+    ];
+    var html = '';
+    for (var i = 0; i < phaseData.length; i++) {
+      var p = phaseData[i];
+      var cls = p.n === phase ? 'phase-item active' : 'phase-item';
+      html += '<div class="' + cls + '">';
+      html += '<div class="phase-num">' + p.n + '</div>';
+      html += '<div class="phase-name">' + p.label + '</div>';
+      html += '<div class="phase-period">' + p.period + '</div>';
+      html += '</div>';
+    }
+    phaseBar.innerHTML = html;
+  }
+
+  var launchEl = document.getElementById('ov-launch');
+  if (launchEl) launchEl.textContent = daysUntil(LAUNCH_DATE);
+
+  var cs = cleanStreak();
+  var cleanEl = document.getElementById('ov-clean');
+  if (cleanEl) cleanEl.textContent = cs !== null ? cs : '-';
+
+  var ws = getWeekStart();
+  var trainCount = 0;
+  for (var i = 0; i < sessions.length; i++) {
+    if (sessions[i].workout !== 'Rust' && new Date(sessions[i].date + 'T12:00:00') >= ws) {
+      trainCount++;
+    }
+  }
+  var trEl = document.getElementById('ov-training');
+  if (trEl) trEl.textContent = trainCount;
+
+  var q = checkPerfectDay();
+
+  var questData = [
+    { done: q.rk,    label: 'Ochtendrechtbank invullen', xp: '+50 XP' },
+    { done: q.tr,    label: 'Training loggen',            xp: '+75 XP' },
+    { done: q.sp,    label: 'Sophro bewijs toevoegen',    xp: '+40 XP' },
+    { done: q.clean, label: 'Clean dag',                  xp: '+25 XP' }
+  ];
+
+  var doneCount = 0;
+  for (var i = 0; i < questData.length; i++) { if (questData[i].done) doneCount++; }
+
+  var qBadge = document.getElementById('quest-count-badge');
+  if (qBadge) {
+    qBadge.className = 'badge ' + (doneCount === 4 ? 'badge-green' : doneCount >= 2 ? 'badge-lime' : 'badge-muted');
+    qBadge.textContent = doneCount + '/4';
+  }
+
+  var qList = document.getElementById('quest-list');
+  if (qList) {
+    var qHtml = '';
+    for (var i = 0; i < questData.length; i++) {
+      var qItem = questData[i];
+      qHtml += '<div class="quest-item">';
+      qHtml += '<div class="quest-circle ' + (qItem.done ? 'done' : '') + '">';
+      if (qItem.done) qHtml += '<span style="font-size:10px;color:#07090F;font-weight:900">✓</span>';
+      qHtml += '</div>';
+      qHtml += '<span class="quest-label ' + (qItem.done ? 'done' : '') + '">' + qItem.label + '</span>';
+      qHtml += '<span class="quest-xp ' + (qItem.done ? 'done' : '') + '">' + (qItem.done ? '✓' : qItem.xp) + '</span>';
+      qHtml += '</div>';
+    }
+    qList.innerHTML = qHtml;
+  }
+
+  var perfectBanner = document.getElementById('perfect-day-banner');
+  if (perfectBanner) perfectBanner.style.display = q.all ? 'block' : 'none';
+}
+
+// ─────────────────────────────────────────────────────────
+// RENDER: RECHTBANK
+// ─────────────────────────────────────────────────────────
+
+function renderRechtbank() {
+  var t = todayStr();
+  var dateLabel = document.getElementById('rk-today-label');
+  if (dateLabel) {
+    dateLabel.textContent = new Date().toLocaleDateString('nl-NL', {
+      weekday: 'long', day: 'numeric', month: 'long'
+    }).toUpperCase();
+  }
+
+  var entry = null;
+  for (var i = 0; i < rechtbank.length; i++) {
+    if (rechtbank[i].date === t) { entry = rechtbank[i]; break; }
+  }
+
+  var aanEl = document.getElementById('rk-aanklager');
+  var verEl = document.getElementById('rk-verweer');
+  if (aanEl) aanEl.value = entry ? (entry.aanklager || '') : '';
+  if (verEl) verEl.value = entry ? (entry.verweer || '') : '';
+
+  var saveLabel = document.getElementById('rk-save-label');
+  if (saveLabel) {
+    saveLabel.innerHTML = entry ? '<span class="badge badge-green">Opgeslagen</span>' : '';
+  }
+
+  var strEl = document.getElementById('rk-streak-num');
+  if (strEl) strEl.textContent = getRkStreak();
+
+  var hist = [];
+  for (var i = 0; i < rechtbank.length; i++) {
+    if (rechtbank[i].date !== t) hist.push(rechtbank[i]);
+    if (hist.length >= 10) break;
+  }
+
+  var histEl = document.getElementById('rk-history');
+  if (!histEl) return;
+  var histHtml = '';
+  for (var i = 0; i < hist.length; i++) {
+    var r = hist[i];
+    histHtml += '<div class="entry">';
+    histHtml += '<button class="delete-btn" onclick="deleteRechtbankEntry(\'' + r.date + '\')">x</button>';
+    histHtml += '<div class="entry-date">' + formatDate(r.date).toUpperCase() + '</div>';
+    histHtml += '<div class="entry-sublabel">Aanklager</div>';
+    histHtml += '<div class="entry-text">' + (r.aanklager || '-') + '</div>';
+    histHtml += '<div class="entry-sublabel">Verweer</div>';
+    histHtml += '<div class="entry-text">' + (r.verweer || '-') + '</div>';
+    histHtml += '</div>';
+  }
+  histEl.innerHTML = histHtml;
+}
+
+function saveRechtbank() {
+  var t = todayStr();
+  var aanEl = document.getElementById('rk-aanklager');
+  var verEl = document.getElementById('rk-verweer');
+  var entry = {
+    date: t,
+    aanklager: aanEl ? aanEl.value : '',
+    verweer: verEl ? verEl.value : ''
+  };
+  var filtered = [];
+  for (var i = 0; i < rechtbank.length; i++) {
+    if (rechtbank[i].date !== t) filtered.push(rechtbank[i]);
+  }
+  filtered.unshift(entry);
+  rechtbank = filtered;
+  storageSet('rechtbank', rechtbank);
+  awardXP('rk_' + t, 50, 'Rechtbank ingevuld', true);
+  checkAchievements();
+  checkPerfectDay();
+  checkStreakBonuses();
+  renderRechtbank();
+  renderHeader();
+  if (activeTab === 'overzicht') renderOverzicht();
+  showToast('OPGESLAGEN +50 XP');
+}
+
+function deleteRechtbankEntry(date) {
+  var filtered = [];
+  for (var i = 0; i < rechtbank.length; i++) {
+    if (rechtbank[i].date !== date) filtered.push(rechtbank[i]);
+  }
+  rechtbank = filtered;
+  storageSet('rechtbank', rechtbank);
+  renderRechtbank();
+}
+
+// ─────────────────────────────────────────────────────────
+// RENDER: GEZONDHEID
+// ─────────────────────────────────────────────────────────
+
+function renderGezondheid() {
+  var streakKeys = ['wiet', 'sig', 'alc'];
+  var streakEls = ['streak-wiet', 'streak-sig', 'streak-alc'];
+  var dateEls = ['streak-wiet-date', 'streak-sig-date', 'streak-alc-date'];
+
+  for (var i = 0; i < streakKeys.length; i++) {
+    var d = daysSince(streaks[streakKeys[i]]);
+    var el = document.getElementById(streakEls[i]);
+    if (el) {
+      el.textContent = d !== null ? d : '-';
+      el.className = 'streak-val' + (d === null ? ' streak-zero' : '');
+    }
+    var dateEl = document.getElementById(dateEls[i]);
+    if (dateEl && streaks[streakKeys[i]]) {
+      dateEl.value = streaks[streakKeys[i]];
+    }
+  }
+
+  var benchEl = document.getElementById('tr-bench');
+  var dlEl = document.getElementById('tr-deadlift');
+  var sqEl = document.getElementById('tr-squat');
+  if (benchEl) benchEl.value = lifts.bench;
+  if (dlEl) dlEl.value = lifts.deadlift;
+  if (sqEl) sqEl.value = lifts.squat;
+
+  updateLiftProgress('prog-bench-bar', 'prog-bench-val', 'prog-bench-pct', lifts.bench, 60, 80);
+  updateLiftProgress('prog-dl-bar', 'prog-dl-val', 'prog-dl-pct', lifts.deadlift, 110, 140);
+  updateLiftProgress('prog-sq-bar', 'prog-sq-val', 'prog-sq-pct', lifts.squat, 75, 100);
+
+  var t = todayStr();
+  var todaySession = null;
+  for (var i = 0; i < sessions.length; i++) {
+    if (sessions[i].date === t) { todaySession = sessions[i]; break; }
+  }
+  var trLabel = document.getElementById('tr-today-label');
+  if (trLabel) {
+    trLabel.innerHTML = todaySession
+      ? '<span class="badge badge-green">' + todaySession.workout + '</span>'
+      : '';
+  }
+
+  var histCard = document.getElementById('tr-history-card');
+  var histList = document.getElementById('tr-history-list');
+  if (histCard && histList) {
+    var recent = sessions.slice(0, 8);
+    histCard.style.display = recent.length > 0 ? 'block' : 'none';
+    var histHtml = '';
+    for (var i = 0; i < recent.length; i++) {
+      var s = recent[i];
+      histHtml += '<div class="stat-row">';
+      histHtml += '<div><div style="font-size:12px;color:var(--muted)">' + formatDate(s.date) + '</div>';
+      histHtml += '<div style="font-size:10px;color:var(--dim);font-family:DM Mono,monospace;margin-top:1px">' + s.workout + '</div></div>';
+      histHtml += '<span class="badge badge-green">done</span></div>';
+    }
+    histList.innerHTML = histHtml;
+  }
+}
+
+function updateLiftProgress(barId, valId, pctId, val, start, goal) {
+  var p = calcPct(val, start, goal);
+  var bar = document.getElementById(barId);
+  var valEl = document.getElementById(valId);
+  var pctEl = document.getElementById(pctId);
+  if (bar) bar.style.width = p + '%';
+  if (valEl) valEl.textContent = val;
+  if (pctEl) pctEl.textContent = p + '% VAN DOEL';
+}
+
+function saveStreaks() {
+  var wEl = document.getElementById('streak-wiet-date');
+  var sEl = document.getElementById('streak-sig-date');
+  var aEl = document.getElementById('streak-alc-date');
+  streaks.wiet = wEl ? wEl.value : '';
+  streaks.sig  = sEl ? sEl.value : '';
+  streaks.alc  = aEl ? aEl.value : '';
+  storageSet('streaks', streaks);
+  checkStreakBonuses();
+  checkAchievements();
+  checkPerfectDay();
+  renderGezondheid();
+  renderHeader();
+  if (activeTab === 'overzicht') renderOverzicht();
+}
+
+function logTraining() {
+  var workoutEl = document.getElementById('tr-workout');
+  var workout = workoutEl ? workoutEl.value : '';
+  if (!workout) { showToast('KIES EEN WORKOUT'); return; }
+
+  var benchEl = document.getElementById('tr-bench');
+  var dlEl = document.getElementById('tr-deadlift');
+  var sqEl = document.getElementById('tr-squat');
+
+  var newBench = benchEl ? (parseFloat(benchEl.value) || lifts.bench) : lifts.bench;
+  var newDL    = dlEl    ? (parseFloat(dlEl.value)    || lifts.deadlift) : lifts.deadlift;
+  var newSQ    = sqEl    ? (parseFloat(sqEl.value)    || lifts.squat)    : lifts.squat;
+
+  lifts.bench    = newBench;
+  lifts.deadlift = newDL;
+  lifts.squat    = newSQ;
+  storageSet('lifts', lifts);
+
+  var t = todayStr();
+  var filtered = [];
+  for (var i = 0; i < sessions.length; i++) {
+    if (sessions[i].date !== t) filtered.push(sessions[i]);
+  }
+  filtered.unshift({ date: t, workout: workout, lifts: { bench: newBench, deadlift: newDL, squat: newSQ } });
+  sessions = filtered;
+  storageSet('sessions', sessions);
+
+  awardXP('tr_' + t, 75, 'Training gelogd', true);
+  checkAchievements();
+  checkPerfectDay();
+
+  if (workoutEl) workoutEl.value = '';
+  showToast('SESSIE GELOGD +75 XP');
+  renderGezondheid();
+  renderHeader();
+  if (activeTab === 'overzicht') renderOverzicht();
+}
+
+// ─────────────────────────────────────────────────────────
+// RENDER: SOPHRO
+// ─────────────────────────────────────────────────────────
+
+function renderSophro() {
+  var countEl = document.getElementById('sophro-count');
+  if (countEl) countEl.textContent = sophro.length;
+
+  var listEl = document.getElementById('sophro-list');
+  if (!listEl) return;
+  var html = '';
+  var limit = Math.min(sophro.length, 20);
+  for (var i = 0; i < limit; i++) {
+    var s = sophro[i];
+    html += '<div class="entry">';
+    html += '<button class="delete-btn" onclick="deleteSophro(' + i + ')">x</button>';
+    html += '<div class="entry-date">' + formatDate(s.date).toUpperCase() + ' - <span style="color:var(--acc)">' + s.type + '</span></div>';
+    html += '<div class="entry-text">' + s.desc + '</div>';
+    html += '</div>';
+  }
+  listEl.innerHTML = html;
+}
+
+function addSophroProof() {
+  var typeEl = document.getElementById('sophro-type');
+  var descEl = document.getElementById('sophro-desc');
+  var type = typeEl ? typeEl.value : '';
+  var desc = descEl ? descEl.value.trim() : '';
+  if (!type || !desc) { showToast('VULT BEIDE VELDEN IN'); return; }
+
+  var t = todayStr();
+  var todayCount = 0;
+  for (var i = 0; i < xpLog.length; i++) {
+    if (xpLog[i].id.indexOf('sp_' + t + '_') === 0) todayCount++;
+  }
+
+  sophro.unshift({ date: t, type: type, desc: desc });
+  storageSet('sophro', sophro);
+
+  if (todayCount < 3) {
+    awardXP('sp_' + t + '_' + todayCount, 40, 'Sophro bewijs', true);
+  }
+
+  checkAchievements();
+  checkPerfectDay();
+
+  if (typeEl) typeEl.value = '';
+  if (descEl) descEl.value = '';
+  showToast('BEWIJS TOEGEVOEGD +40 XP');
+  renderSophro();
+  if (activeTab === 'overzicht') renderOverzicht();
+}
+
+function deleteSophro(idx) {
+  sophro.splice(idx, 1);
+  storageSet('sophro', sophro);
+  renderSophro();
+}
+
+// ─────────────────────────────────────────────────────────
+// RENDER: LEVEL
+// ─────────────────────────────────────────────────────────
+
+function renderLevel() {
+  var info = getLevelInfo();
+
+  var numEl = document.getElementById('level-number');
+  var titEl = document.getElementById('level-title');
+  var barEl = document.getElementById('level-xp-bar');
+  var xiEl  = document.getElementById('level-xp-info');
+
+  if (numEl) numEl.textContent = info.cur.n;
+  if (titEl) titEl.textContent = info.cur.title.toUpperCase();
+  if (barEl) barEl.style.width = info.progress + '%';
+  if (xiEl) {
+    xiEl.textContent = info.next
+      ? info.total.toLocaleString('nl-NL') + ' / ' + info.next.xp.toLocaleString('nl-NL') + ' XP'
+      : info.total.toLocaleString('nl-NL') + ' XP - Maximaal niveau';
+  }
+
+  renderRewards(info.cur);
+  renderAchievements();
+  renderRecords();
+  renderMilestones();
+  renderFinance();
+  renderRijbewijs();
+}
+
+function renderRewards(curLevel) {
+  var el = document.getElementById('rewards-list');
+  if (!el) return;
+  var html = '';
+  for (var i = 1; i < LEVELS.length; i++) {
+    var lv = LEVELS[i];
+    var reached = curLevel.n >= lv.n;
+    var rw = rewards[lv.n] || { text: '', claimed: false };
+    var total = getTotalXP();
+    var progress = reached ? 100 : Math.min(99, Math.round((total / lv.xp) * 100));
+
+    html += '<div class="reward-card ' + (reached ? 'reached' : '') + '">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">';
+    html += '<div class="reward-level-label">LVL ' + lv.n + ' - ' + lv.title.toUpperCase() + '</div>';
+    html += '<span class="badge ' + (reached ? 'badge-green' : 'badge-muted') + '">' + (reached ? 'BEREIKT' : progress + '%') + '</span>';
+    html += '</div>';
+
+    if (rw.text) {
+      html += '<div class="reward-text">🎁 ' + rw.text + '</div>';
+      if (!rw.claimed) {
+        html += '<button class="btn-small" ' + (!reached ? 'disabled' : '') + ' onclick="claimReward(' + lv.n + ')">';
+        html += reached ? 'CLAIM BELONING' : 'BEREIK LEVEL ' + lv.n;
+        html += '</button>';
+        html += ' <button class="btn-ghost" onclick="editReward(' + lv.n + ')" style="margin-left:4px;font-size:8px;padding:5px 9px">WIJZIG</button>';
+      } else {
+        html += '<div class="reward-claimed-label">GECLAIMD - GOED GEDAAN</div>';
+      }
+    } else {
+      html += '<input type="text" placeholder="Mijn beloning bij level ' + lv.n + '..." style="margin-bottom:8px;font-size:12px;padding:7px 10px" onblur="setReward(' + lv.n + ', this.value)">';
+    }
+
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function setReward(level, text) {
+  if (!text.trim()) return;
+  if (!rewards[level]) rewards[level] = {};
+  rewards[level].text = text.trim();
+  rewards[level].claimed = false;
+  storageSet('rewards', rewards);
+  renderRewards(getLevelInfo().cur);
+  showToast('BELONING INGESTELD');
+}
+
+function claimReward(level) {
+  var info = getLevelInfo();
+  if (info.cur.n < level) { showToast('LEVEL NOG NIET BEREIKT'); return; }
+  if (!rewards[level]) rewards[level] = {};
+  rewards[level].claimed = true;
+  storageSet('rewards', rewards);
+  renderRewards(info.cur);
+  showToast('BELONING GECLAIMD!');
+}
+
+function editReward(level) {
+  if (!rewards[level]) rewards[level] = {};
+  rewards[level].text = '';
+  storageSet('rewards', rewards);
+  renderRewards(getLevelInfo().cur);
+}
+
+function renderAchievements() {
+  var countEl = document.getElementById('ach-count-label');
+  if (countEl) countEl.textContent = unlocked.length + '/' + ACHIEVEMENTS_CONFIG.length;
+
+  var gridEl = document.getElementById('ach-grid');
+  if (!gridEl) return;
+  var html = '';
+  for (var i = 0; i < ACHIEVEMENTS_CONFIG.length; i++) {
+    var a = ACHIEVEMENTS_CONFIG[i];
+    var isUnlocked = false;
+    for (var j = 0; j < unlocked.length; j++) {
+      if (unlocked[j] === a.id) { isUnlocked = true; break; }
+    }
+    html += '<div class="ach-card ' + (isUnlocked ? 'unlocked' : '') + '">';
+    html += '<div class="ach-xp-badge">+' + a.xp + '</div>';
+    html += '<div class="ach-icon">' + a.icon + '</div>';
+    html += '<div class="ach-name">' + a.name + '</div>';
+    html += '<div class="ach-desc">' + a.desc + '</div>';
+    html += '</div>';
+  }
+  gridEl.innerHTML = html;
+}
+
+function renderRecords() {
+  var maxBench = lifts.bench;
+  var maxDL = lifts.deadlift;
+  var maxSQ = lifts.squat;
+  for (var i = 0; i < sessions.length; i++) {
+    var s = sessions[i];
+    if (s.lifts) {
+      if (s.lifts.bench    && s.lifts.bench    > maxBench) maxBench = s.lifts.bench;
+      if (s.lifts.deadlift && s.lifts.deadlift > maxDL)    maxDL    = s.lifts.deadlift;
+      if (s.lifts.squat    && s.lifts.squat    > maxSQ)    maxSQ    = s.lifts.squat;
+    }
+  }
+  var cs = cleanStreak();
+  var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+  set('rec-clean', cs !== null ? cs + ' dagen' : '-');
+  set('rec-rk',    getRkStreak() > 0 ? getRkStreak() + ' dagen' : '-');
+  set('rec-bench', maxBench > 0 ? maxBench + ' kg' : '-');
+  set('rec-dl',    maxDL > 0    ? maxDL    + ' kg' : '-');
+  set('rec-sq',    maxSQ > 0    ? maxSQ    + ' kg' : '-');
+}
+
+function renderMilestones() {
+  var done = 0;
+  for (var i = 0; i < MILESTONES_CONFIG.length; i++) {
+    if (milestones[MILESTONES_CONFIG[i].key]) done++;
+  }
+
+  var countEl = document.getElementById('milestone-count-label');
+  if (countEl) countEl.textContent = done + '/' + MILESTONES_CONFIG.length;
+
+  var listEl = document.getElementById('milestone-list');
+  if (!listEl) return;
+  var html = '';
+  for (var i = 0; i < MILESTONES_CONFIG.length; i++) {
+    var m = MILESTONES_CONFIG[i];
+    var isDone = !!milestones[m.key];
+    html += '<div class="milestone" onclick="toggleMilestone(\'' + m.key + '\')">';
+    html += '<div class="milestone-box ' + (isDone ? 'done' : '') + '">';
+    if (isDone) html += '<span style="font-size:9px;color:#07090F;font-weight:900">✓</span>';
+    html += '</div>';
+    html += '<span class="milestone-text ' + (isDone ? 'done' : '') + '">' + m.label + '</span>';
+    html += '</div>';
+  }
+  listEl.innerHTML = html;
+}
+
+function toggleMilestone(key) {
+  milestones[key] = !milestones[key];
+  storageSet('milestones', milestones);
+  if (milestones[key]) {
+    awardXP('ms_' + key, 200, 'Mijlpaal: ' + key, true);
+    checkAchievements();
+    showToast('MILESTONE +200 XP');
+  }
+  renderMilestones();
+}
+
+function renderFinance() {
+  var debt = finance.debt || 0;
+  var buffer = finance.buffer || 0;
+
+  var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+  set('fin-debt-display',   debt.toLocaleString('nl-NL'));
+  set('fin-buffer-display', buffer.toLocaleString('nl-NL'));
+
+  var dIn = document.getElementById('fin-debt-input');
+  var bIn = document.getElementById('fin-buffer-input');
+  if (dIn) dIn.value = debt;
+  if (bIn) bIn.value = buffer;
+
+  var debtPct = Math.max(0, Math.round((1 - debt / 10000) * 100));
+  var bufPct  = Math.min(100, Math.round((buffer / 3000) * 100));
+
+  var dBar = document.getElementById('fin-debt-bar');
+  var bBar = document.getElementById('fin-buffer-bar');
+  if (dBar) dBar.style.width = debtPct + '%';
+  if (bBar) bBar.style.width = bufPct + '%';
+}
+
+function saveFinance() {
+  var dIn = document.getElementById('fin-debt-input');
+  var bIn = document.getElementById('fin-buffer-input');
+  finance.debt   = dIn ? (parseFloat(dIn.value) || 0) : finance.debt;
+  finance.buffer = bIn ? (parseFloat(bIn.value) || 0) : finance.buffer;
+  storageSet('finance', finance);
+  renderFinance();
+}
+
+function renderRijbewijs() {
+  var badge = document.getElementById('rijbewijs-badge');
+  var btn   = document.getElementById('rijbewijs-btn');
+  if (badge) {
+    badge.className = 'badge ' + (rijbewijs ? 'badge-green' : 'badge-orange');
+    badge.textContent = rijbewijs ? 'GEREGELD' : 'kwijt';
+  }
+  if (btn) {
+    btn.textContent = rijbewijs ? 'Markeer als open' : 'Markeer als geregeld';
+  }
+}
+
+function toggleRijbewijs() {
+  rijbewijs = !rijbewijs;
+  storageSet('rijbewijs', rijbewijs);
+  if (rijbewijs) {
+    checkAchievements();
+    showToast('RIJBEWIJS GEREGELD +300 XP');
+  }
+  renderRijbewijs();
+}
+
+// ─────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────
+
+function init() {
+  renderHeader();
+  updateXPBar();
+  renderOverzicht();
+  checkStreakBonuses();
+  checkAchievements();
+}
+
+init();
+
+</script>
+
+</body>
+</html>
