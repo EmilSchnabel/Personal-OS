@@ -320,19 +320,19 @@
         <div class="grid-3">
           <div style="text-align:center">
             <div class="streak-val streak-zero" id="streak-wiet">-</div>
-            <div class="big-label streak-label" style="font-size:8px;margin-top:2px;cursor:pointer" id="streak-label-A" onclick="renameStreak('A')">Habit A</div>
+            <div class="big-label streak-label" style="font-size:8px;margin-top:2px;cursor:pointer" id="streak-label-A" onclick="renameStreak('A')">Wiet</div>
             <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
             <input type="date" id="streak-wiet-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
           </div>
           <div style="text-align:center">
             <div class="streak-val streak-zero" id="streak-sig">-</div>
-            <div class="big-label streak-label" style="font-size:8px;margin-top:2px;cursor:pointer" id="streak-label-B" onclick="renameStreak('B')">Habit B</div>
+            <div class="big-label streak-label" style="font-size:8px;margin-top:2px;cursor:pointer" id="streak-label-B" onclick="renameStreak('B')">Sigaretten</div>
             <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
             <input type="date" id="streak-sig-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
           </div>
           <div style="text-align:center">
             <div class="streak-val streak-zero" id="streak-alc">-</div>
-            <div class="big-label streak-label" style="font-size:8px;margin-top:2px;cursor:pointer" id="streak-label-C" onclick="renameStreak('C')">Habit C</div>
+            <div class="big-label streak-label" style="font-size:8px;margin-top:2px;cursor:pointer" id="streak-label-C" onclick="renameStreak('C')">Alcohol</div>
             <label class="field-label" style="margin-top:7px;margin-bottom:3px">Start</label>
             <input type="date" id="streak-alc-date" style="font-size:10px;text-align:center;padding:7px 3px" onchange="saveStreaks()">
           </div>
@@ -561,7 +561,7 @@ var LEVELS = [
 
 var MILESTONES_CONFIG = [
   { key: 'sport',    label: 'Sportschool ingeschreven + biometrische scan' },
-  { key: 'stop',     label: 'Stop datum ingesteld' },
+  { key: 'stop',     label: 'Stop datum ingesteld (wiet + sigaretten + alcohol)' },
   { key: 'jurist',   label: 'Jurist consulteren' },
   { key: 'bv',       label: 'BV opzetten via notaris' },
   { key: 'holding',  label: 'Holding structuur opzetten' },
@@ -1230,9 +1230,10 @@ function renderGezondheid() {
   var streakEls = ['streak-wiet', 'streak-sig', 'streak-alc'];
   var dateEls = ['streak-wiet-date', 'streak-sig-date', 'streak-alc-date'];
   var labelKeys = ['A', 'B', 'C'];
+  var labelDefaults = { A: 'Wiet', B: 'Sigaretten', C: 'Alcohol' };
   for (var i = 0; i < labelKeys.length; i++) {
     var lblEl = document.getElementById('streak-label-' + labelKeys[i]);
-    if (lblEl) lblEl.textContent = streaks['label' + labelKeys[i]] || ('Habit ' + labelKeys[i]);
+    if (lblEl) lblEl.textContent = streaks['label' + labelKeys[i]] || labelDefaults[labelKeys[i]];
   }
 
   for (var i = 0; i < streakKeys.length; i++) {
@@ -1317,8 +1318,8 @@ function saveStreaks() {
 
 function renameStreak(key) {
   var current = streaks['label' + key] || '';
-  var defaultLabel = 'Habit ' + key;
-  var newLabel = window.prompt('Naam voor deze streak (max 12 tekens):', current || defaultLabel);
+  var defaults = { A: 'Wiet', B: 'Sigaretten', C: 'Alcohol' };
+  var newLabel = window.prompt('Naam voor deze streak (max 12 tekens):', current || defaults[key]);
   if (newLabel === null) return;
   newLabel = newLabel.trim().slice(0, 12);
   streaks['label' + key] = newLabel;
